@@ -5,6 +5,7 @@ const Role = require("./roleModel");
 const User = sequelize.define("User", {
   name: DataTypes.STRING,
   email: { type: DataTypes.STRING, unique: true },
+  mobile: { type: DataTypes.STRING, unique: true },
   password: DataTypes.STRING,
 });
 
