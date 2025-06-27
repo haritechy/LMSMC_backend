@@ -58,7 +58,7 @@ exports.register = async (req, res) => {
   const { name, email, password,mobile, roleid } = req.body;
 
   try {
-    if(roleid !=2&&roleid !=3){
+    if(roleid !=2&&roleid !=3&&roleid !=1){
         return res.status(400).json({message:"invalid role"});
     }
     const roleRecord = await Role.findOne({ where: { id: roleid } });
