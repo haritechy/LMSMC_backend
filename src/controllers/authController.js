@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
 
 
 exports.register = async (req, res) => {
-  const { name, email, password,mobile, roleid } = req.body;
+  const { name, email, password,mobile, roleid ,specialist} = req.body;
 
   try {
     if(roleid !=2&&roleid !=3){
@@ -82,6 +82,7 @@ exports.register = async (req, res) => {
       mobile,
       password: hashedPassword,
       RoleId: roleRecord.id,
+      specialist: specialist
     });
 
     res.status(201).json({
