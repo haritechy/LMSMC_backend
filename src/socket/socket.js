@@ -17,11 +17,11 @@ function setupWebSocket(server) {
 
     // Save socket by user ID
     clients.set(user.id, { ws, role: user.role });
-    console.log(`🟢 WebSocket connected: ${user.id} (${user.role})`);
+    console.log(`WebSocket connected: ${user.id} (${user.role})`);
 
     ws.on("close", () => {
       clients.delete(user.id);
-      console.log(`🔴 WebSocket disconnected: ${user.id}`);
+      console.log(` WebSocket disconnected: ${user.id}`);
     });
   });
 }
