@@ -1,14 +1,9 @@
 const express = require("express");
 const http = require("http");
+const router = require("./src/routes/index");
 const cors = require("cors");
 require("dotenv").config();
 const { sequelize } = require("./src/models");
-
-// ✅ LOAD ASSOCIATIONS BEFORE ANY CONTROLLER
-require("./src/models/associations");
-
-const router = require("./src/routes/authRoute");
-const chatRouter = require("./src/routes/chatRoute");
 const { setupWebSocket } = require("./src/socket/socket");
 
 const app = express();
@@ -18,7 +13,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", router);
-app.use("/api/chat", chatRouter);
 
 const PORT = process.env.PORT || 5000;
 
