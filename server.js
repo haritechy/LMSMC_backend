@@ -1,9 +1,11 @@
-const express = require("express");
-const http = require("http");
+const express = require("express")
+const http = require("http")
+const { sequelize } = require("./src/models");
+
 const router = require("./src/routes/index");
 const cors = require("cors");
 require("dotenv").config();
-const { sequelize } = require("./src/models");
+
 const { setupWebSocket } = require("./src/socket/socket");
 
 const app = express();
