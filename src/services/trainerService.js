@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const Role = require("../models/roleModel");
-
+const Message = require("../models/messageModel");
+const { sequelize } = require("../models");
+const { Op } = require("sequelize");
 exports.getAllTrainers = async () => {
   const role = await Role.findOne({ where: { name: "trainer" } });
   if (!role) throw new Error("Trainer role not found");
@@ -39,8 +41,32 @@ exports.updateTrainer = async (id, data) => {
 };
 
 exports.deleteTrainer = async (id) => {
-  const trainer = await User.findByPk(id);
-  if (!trainer) throw new Error("Trainer not found");
+  const transaction = await sequelize.transaction();
 
-  return await trainer.destroy();
+  try {
+    const trainer = await User.findByPk(id, { transaction });
+    if (!trainer) {
+      throw new Error("Trainer not found");
+    }
+
+    // Delete all messages where user is sender or receiver
+    await Message.destroy({
+      where: {
+        [Op.or]: [
+          { senderId: id },
+          { receiverId: id }
+        ]
+      },
+      transaction
+    });
+
+    // Delete the trainer
+    await trainer.destroy({ transaction });
+
+    await transaction.commit();
+    return { message: "Trainer and related messages deleted successfully" };
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
 };
