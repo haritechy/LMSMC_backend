@@ -58,14 +58,13 @@ exports.register = async (req, res) => {
   const { name, email, password,mobile, roleid } = req.body;
 
   try {
-    if(roleid !=2&&roleid !=3&&roleid !=1){
+    if(roleid !=2&&roleid !=3&&roleid !=4&&roleid !=5){
         return res.status(400).json({message:"invalid role"});
     }
     const roleRecord = await Role.findOne({ where: { id: roleid } });
     if (!roleRecord) {
       return res.status(400).json({ message: "Invalid role provided." });
     }
-
     // 2. Check if email already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
