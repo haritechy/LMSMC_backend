@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+    network_mode: "bridge"
