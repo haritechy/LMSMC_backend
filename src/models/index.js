@@ -9,7 +9,7 @@ sequelize.sync({ alter: true }).then(async () => {
   console.log("✅ All tables synced");
 
   // Seed roles (insert if not exists)
-  const roles = ["admin", "trainer", "student"];
+  const roles = ["super admin","business admin","technical admin", "trainer", "student"];
   for (const name of roles) {
     await Role.findOrCreate({ where: { name } });
   }
