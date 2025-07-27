@@ -3,6 +3,7 @@ node_modules/
 
 # Environment variables
 .env
+.env*
 # Log files
 *.log
 logs/
@@ -11,22 +12,19 @@ yarn-debug.log*
 yarn-error.log*
 
 # Runtime files
-pids
+pids/
 *.pid
 *.seed
 *.pid.lock
 
-
-
-# Coverage directory used by testing tools
+# Test coverage
 coverage/
 
-# Build / dist folders
+# Build output
 dist/
 build/
 
-
-# Optional: lock files (if not using lock-based installs)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# Optional: lock files (uncomment if not using lock-based installs)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
