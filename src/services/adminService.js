@@ -1,24 +1,51 @@
 const User = require("../models/userModel");
 const Role = require("../models/roleModel");
 const Message = require("../models/messageModel");
+const bcrypt = require("bcryptjs");
 const { sequelize } = require("../models");
 const { Op } = require("sequelize");
-
 const allowedRoles = ["business admin", "technical admin", "trainer"];
 
 // Create Admin
 exports.createAdmin = async (data) => {
-  const roleName = data.role;
-  if (!allowedRoles.includes(roleName)) {
+  const { name, email, password, mobile, role } = data;
+
+  // 1. Validate role
+  if (!allowedRoles.includes(role)) {
     throw new Error("Invalid role. Only business admin, technical admin, or trainer allowed.");
   }
 
-  const role = await Role.findOne({ where: { name: roleName } });
-  if (!role) throw new Error("Role not found");
+  // 2. Get role from DB
+  const roleRecord = await Role.findOne({ where: { name: role } });
+  if (!roleRecord) throw new Error("Role not found");
 
-  return await User.create({ ...data, RoleId: role.id });
+  // 3. Check for existing user
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) throw new Error("Email already in use");
+
+  // 4. Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // 5. Create and return user
+  const newUser = await User.create({
+    name,
+    email,
+    mobile,
+    password: hashedPassword,
+    RoleId: roleRecord.id,
+  });
+
+  return {
+    message: "Admin created successfully",
+    user: {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      mobile: newUser.mobile,
+      role: roleRecord.name,
+    }
+  };
 };
-
 // Get All Admins
 exports.getAllAdmins = async () => {
   const roles = await Role.findAll({ where: { name: allowedRoles } });
