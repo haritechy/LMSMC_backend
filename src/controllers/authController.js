@@ -29,7 +29,8 @@ exports.login = async (req, res) => {
       {
         id: user.id,
         email: user.email,
-        role: user.Role.name, 
+        role: user.Role.name,
+        roleId: user.roleId, // Include roleId in token payload if needed
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
@@ -44,6 +45,7 @@ exports.login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.Role.name,
+        roleId: user.RoleId, // Include roleId in response
         mobile: user.mobile,
       },
     });
