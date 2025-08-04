@@ -1,5 +1,6 @@
 const express = require("express")
 const http = require("http")
+const bodyParser = require("body-parser");
 const { sequelize } = require("./src/models");
 const router = require("./src/routes/index");
 const cors = require("cors");
@@ -17,9 +18,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded files
-app.use('./uploads', express.static(path.join(__dirname, 'uploads')));
-app.use("/api", router);
+app.use("/uploads", express.static("uploads"));
 
+app.use("/api", router);
+app.use(bodyParser.json({ limit: "20mb" }));
+app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
 
 const PORT = process.env.PORT || 5000;
 

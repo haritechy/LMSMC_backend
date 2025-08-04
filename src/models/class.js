@@ -6,6 +6,7 @@ const Class = sequelize.define("Class", {
   description: DataTypes.TEXT,
   order: DataTypes.INTEGER,
   thumbnail: DataTypes.STRING,
+    duration: DataTypes.INTEGER
 });
 
 module.exports = Class;
