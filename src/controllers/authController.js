@@ -45,8 +45,8 @@ exports.login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.Role.name,
-        roleId: user.RoleId, // Include roleId in response
         mobile: user.mobile,
+        roleid: user.RoleId,
       },
     });
 
