@@ -4,7 +4,7 @@ const trainerController = require("../controllers/trainerController");
 const auth = require("../middleware/authMiddleware");
 
 
-router.get("/trainer", auth, trainerController.getAllTrainers);
+router.get("/trainer", trainerController.getAllTrainers);
 router.get("/trainer/:id", auth, trainerController.getTrainerById);
 router.post("/trainer", auth, trainerController.createTrainer);
 router.put("/trainer/:id", auth, trainerController.updateTrainer);
