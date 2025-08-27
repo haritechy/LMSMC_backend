@@ -7,7 +7,10 @@ const Course = sequelize.define("Course", {
   title: DataTypes.STRING,
   description: DataTypes.TEXT,
   thumbnail: DataTypes.STRING,
-  defaultPrice:DataTypes.INTEGER,
+  basePrice: {
+  type: DataTypes.INTEGER,
+  allowNull: true  
+},
   rating: {
     type: DataTypes.FLOAT,
     defaultValue: 0.0,

@@ -21,6 +21,7 @@ router.post(
 
 // ✅ Get all courses (usually public, no token required)
 router.get("/all", controller.getAllCourses);
+router.get("/courseoptions",controller.getCourseOptions);
 
 // ✅ Get single course (usually public, no token required)
 router.get("/all/:id", controller.getCourse);

@@ -1,4 +1,5 @@
 const adminService = require("../services/adminService");
+const { getRolesWithCount } = require("../services/usersService");
 
 exports.createAdmin = async (req, res) => {
   try {
@@ -44,3 +45,12 @@ exports.deleteAdmin = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+exports.superAdminView = async (req,res) =>{
+  try{
+    const result = await getRolesWithCount(req.params.id);
+    res.json(result);
+  }catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
