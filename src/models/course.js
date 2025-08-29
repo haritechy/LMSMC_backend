@@ -9,7 +9,8 @@ const Course = sequelize.define("Course", {
   thumbnail: DataTypes.STRING,
   basePrice: {
   type: DataTypes.INTEGER,
-  allowNull: true  
+  allowNull: true,
+  defaultValue:0,  
 },
   rating: {
     type: DataTypes.FLOAT,
@@ -26,12 +27,7 @@ const Course = sequelize.define("Course", {
   },
 });
 
-Course.hasMany(CoursePriceOption, {
-  as: "priceOptions",       
-  foreignKey: "courseId"
-});
-CoursePriceOption.belongsTo(Course, {
-  foreignKey: "courseId"
-});
+Course.hasMany(CoursePriceOption, { as: "priceOptions", foreignKey: "courseId" });
+CoursePriceOption.belongsTo(Course, { foreignKey: "courseId" });
 
 module.exports = Course;
