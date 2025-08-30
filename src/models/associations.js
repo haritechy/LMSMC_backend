@@ -21,6 +21,13 @@ Enrollment.belongsTo(Course, { foreignKey: "CourseId" });
 Course.belongsTo(User, { as: "Trainer", foreignKey: "TrainerId" });
 User.hasMany(Course, { as: "Courses", foreignKey: "TrainerId" });
 
+
+// Define associations
+Enrollment.belongsTo(Course, { foreignKey: "CourseId" });
+
+Course.hasMany(Enrollment, { foreignKey: "CourseId" });
+
+
 // Enrollment - User (student)
 Enrollment.belongsTo(User, { as: "student", foreignKey: "studentid" });
 User.hasMany(Enrollment, { as: "enrollments", foreignKey: "studentid" });
@@ -39,3 +46,4 @@ module.exports = {
   Class,
   Enrollment,
 };
+
