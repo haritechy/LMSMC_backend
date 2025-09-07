@@ -8,7 +8,7 @@ const allowedRoles = ["business admin", "technical admin", "trainer"];
 
 // Create Admin
 exports.createAdmin = async (data) => {
-  const { name, email, password, mobile, role } = data;
+  const { name, email, password, mobile, role,specialist } = data;
 
   // 1. Validate role
   if (!allowedRoles.includes(role)) {
@@ -31,6 +31,7 @@ exports.createAdmin = async (data) => {
     name,
     email,
     mobile,
+    specialist,
     password: hashedPassword,
     RoleId: roleRecord.id,
   });

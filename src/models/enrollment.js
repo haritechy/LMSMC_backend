@@ -1,7 +1,11 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
+
+const User = require("./userModel");
+
 const CoursePriceOption = require("./courseOptionModel");
 const Course = require("./course");
+
 
 const Enrollment = sequelize.define("Enrollment", {
   studentName: { type: DataTypes.STRING, allowNull: false },
@@ -10,9 +14,18 @@ const Enrollment = sequelize.define("Enrollment", {
   studentid: {
     type: DataTypes.INTEGER,
     allowNull: false,
+
+    references: {
+      model: 'Users',
+      key: 'id',
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+
     references: { model: "Users", key: "id" },
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
+
   },
 
   courseId: {   // ✅ added missing column

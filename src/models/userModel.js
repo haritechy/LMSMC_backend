@@ -10,8 +10,9 @@ const User = sequelize.define("User", {
    active: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
-  },
+  }, 
   specialist: DataTypes.STRING,
+  
 });
 
 User.belongsTo(Role);
