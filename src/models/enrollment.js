@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
+const User = require("./userModel");
 
 const Enrollment = sequelize.define("Enrollment", {
   studentName: {
@@ -11,7 +12,7 @@ const Enrollment = sequelize.define("Enrollment", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Users', // Must match the exact table name for User model in your DB
+      model: 'Users',
       key: 'id',
     },
     onUpdate: 'CASCADE',
