@@ -48,9 +48,9 @@ exports.getChatContacts = async (req, res) => {
 // 🔹 Controller: Admin get all messages
 exports.getAllMessages = async (req, res) => {
   try {
-    if (!req.user || req.user.role !== "admin") {
-      return res.status(403).json({ error: "Admins only" });
-    }
+    // if (!req.user || req.user.roleid != 1) {
+    //   return res.status(403).json({ error: "Admins only" });
+    // }
 
     const data = await messageService.getAllMessages();
     res.json(data);

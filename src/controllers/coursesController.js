@@ -1,5 +1,3 @@
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
 const User = require("../models/userModel");
 const Class = require("../models/class");
 const Course = require("../models/course");
@@ -12,7 +10,6 @@ exports.createCourse = async (req, res) => {
     const {
       title,
       description,
-      defaultPrice,
       rating,
       trainerId,
     } = req.body;
@@ -35,7 +32,6 @@ exports.createCourse = async (req, res) => {
     const course = await Course.create({
       title,
       description,
-      defaultPrice: parseFloat(defaultPrice),
       rating: parseFloat(rating) || 0,
       thumbnail: courseThumbnail || null,
       duration: 0,
@@ -179,7 +175,6 @@ exports.updateCourse = async (req, res) => {
     await course.update({
       title: req.body.title,
       description: req.body.description,
-      defaultPrice: parseFloat(req.body.defaultPrice),
       rating: parseFloat(req.body.rating) || 0,
       TrainerId: req.body.TrainerId !== undefined ? req.body.TrainerId : course.TrainerId,
     });
@@ -268,12 +263,6 @@ exports.enrollStudent = async (req, res) => {
     const studentCount = course.Enrollments.length + 1;
     let finalPrice = course.defaultPrice;
 
-    if (studentCount === 1) {
-      finalPrice *= 3;
-    } else if (studentCount === 2) {
-      finalPrice *= 2;
-    }
-
     const enrollment = await Enrollment.create({
       studentName: studentName.trim(),
       studentid,
@@ -344,6 +333,7 @@ exports.getActiveCoursesForStudent = async (req, res) => {
 
 const { Op } = require("sequelize");
 const Message = require("../models/messageModel");
+const CoursePriceOption = require("../models/courseOptionModel");
 
 // ✅ Get Trainers for Student Courses + last message + unread count
 exports.getTrainersForStudentCourses = async (req, res) => {
@@ -489,5 +479,15 @@ exports.getStudentsForTrainer = async (req, res) => {
   } catch (err) {
     console.error("Get students for trainer courses error:", err);
     res.status(500).json({ error: err.message || "Something went wrong." });
+  }
+};
+
+exports.getCourseOptions = async (req, res) => {
+  try {
+    const options = await CoursePriceOption.findAll();
+    res.status(200).json(options);
+  } catch (err) {
+    console.error("Error fetching course options:", err);
+    res.status(500).json({ message: "Failed to fetch course options" });
   }
 };

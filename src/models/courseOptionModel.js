@@ -7,18 +7,19 @@ const CoursePriceOption = sequelize.define("CoursePriceOption", {
     primaryKey: true,
     autoIncrement: true,
   },
-  courseId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Courses',
-      key: 'id'
-    },
-    onDelete: 'CASCADE'
+   courseId: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+  references: {
+    model: "Courses",
+    key: "id"
   },
+  onDelete: "CASCADE"
+},
   optionName: {
     type: DataTypes.STRING,
     allowNull: false, // e.g., "Individual", "Small Group", "Large Group"
+    defaultValue: 'Default Option',
   },
   studentCount: {
     type: DataTypes.INTEGER,
@@ -36,14 +37,11 @@ const CoursePriceOption = sequelize.define("CoursePriceOption", {
     }
   },
   basePrice: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.INTEGER,
     allowNull: false, // Base price for this option
-    validate: {
-      min: 0
-    }
   },
   discountPercent: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.INTEGER,
     defaultValue: 0, // Discount percentage (0-100)
     validate: {
       min: 0,
