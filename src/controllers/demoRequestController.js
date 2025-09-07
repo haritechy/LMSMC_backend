@@ -137,7 +137,7 @@ exports.approveDemoRequest = async (req, res) => {
 
     // Check trainer exists and is available
     const trainer = await User.findOne({
-      where: { id: assignedTrainerId, RoleId: 2 } // adjust RoleId if trainers use different role
+      where: { id: assignedTrainerId, RoleId: 4 } 
     });
 
     if (!trainer) {

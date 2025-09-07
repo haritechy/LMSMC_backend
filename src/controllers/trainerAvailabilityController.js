@@ -16,7 +16,7 @@ exports.setTrainerAvailability = async (req, res) => {
 
     // Verify trainer exists
     const trainer = await User.findOne({
-      where: { id: trainerId, RoleId: 2 }
+      where: { id: trainerId, RoleId: 4 }
     });
 
     if (!trainer) {
