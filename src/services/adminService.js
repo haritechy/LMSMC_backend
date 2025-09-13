@@ -44,6 +44,7 @@ exports.createAdmin = async (data) => {
       email: newUser.email,
       mobile: newUser.mobile,
       role: roleRecord.name,
+      specialist: newUser.specialist,
     }
   };
 };

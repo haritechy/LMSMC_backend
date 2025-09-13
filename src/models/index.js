@@ -4,38 +4,37 @@ const User = require("./userModel");
 const Enrollment = require("./enrollment");
 const Course = require("./course");
 const CoursePriceOption = require("./courseOptionModel");
+const DemoSession = require("./demoSession");
+const TrainerAvailability = require("./trainerAvailability");
+
 
 // Associations
 Role.hasMany(User, { foreignKey: "roleId" });
 
-
-sequelize.sync({ alter: true }).then(async () => {
-  console.log("✅ All tables synced");
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('Database connected!');
+    console.log("✅ Database connected!");
 
-    await DemoSession.sync({ alter: true }); // adjust table to match model
-    console.log('DemoSession table synced!');
+    // Sync all models
+    await sequelize.sync({ alter: true });
+    console.log("✅ All tables synced");
 
-    process.exit(0); // exit after syncing
-  } catch (error) {
-    console.error('Error syncing DemoSession table:', error);
-    process.exit(1);
+    // Sync DemoSession separately if needed
+    await DemoSession.sync({ alter: true });
+    console.log("✅ DemoSession table synced!");
+     await TrainerAvailability.sync({ alter: true });
+    console.log("✅ Trainer table synced!");
+
+    // Seed roles
+    const roles = ["super admin", "business admin", "technical admin", "trainer", "student"];
+    for (const name of roles) {
+      await Role.findOrCreate({ where: { name } });
+    }
+    console.log("✅ Roles seeded");
+  } catch (err) {
+    console.error("❌ Sync error:", err);
   }
 })();
 
-  const roles = ["super admin","business admin","technical admin", "trainer", "student"];
-  for (const name of roles) {
-    await Role.findOrCreate({ where: { name } });
-  }
-
-  console.log("✅ Roles seeded");
-}).catch((err) => {
-  console.error("❌ Sync error:", err);
-});
-
-
-
-module.exports = { sequelize, Role, User, Enrollment, Course, CoursePriceOption };
+module.exports = { sequelize, Role, User, Enrollment, Course, CoursePriceOption ,TrainerAvailability};

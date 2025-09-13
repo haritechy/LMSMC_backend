@@ -1,26 +1,36 @@
 const trainerService = require("../services/trainerService");
-const TrainerAvailability = require("../models/trainerAvailability")
+const TrainerAvailability = require("../models/trainerAvailability");
 const DemoRequest = require("../models/demoRequest");
 const User = require("../models/userModel");
+const Course = require("../models/course"); // ✅ Ensure Course model is imported
+const { sequelize, Op } = require("../models");
 
+// ✅ Get all trainers
 exports.getAllTrainers = async (req, res) => {
   try {
     const trainers = await trainerService.getAllTrainers();
-    
+
     // Add availability info for each trainer
     const trainersWithAvailability = await Promise.all(
       trainers.map(async (trainer) => {
         const availability = await TrainerAvailability.findAll({
-          where: { trainerId: trainer.id },
+          where: { trainerId: trainer.id }, // ✅ FIXED
           order: [
-            [sequelize.literal("FIELD(dayOfWeek, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')")]
+            [
+              sequelize.literal(`
+                ARRAY_POSITION(
+                  ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], "dayOfWeek"
+                )
+              `),
+              'ASC'
+            ]
           ]
         });
 
         const pendingDemos = await DemoRequest.count({
-          where: { 
+          where: {
             assignedTrainerId: trainer.id,
-            status: 'approved'
+            status: "approved"
           }
         });
 
@@ -37,30 +47,38 @@ exports.getAllTrainers = async (req, res) => {
       message: "Trainers fetched successfully"
     });
   } catch (err) {
-    console.error('Get all trainers error:', err);
+    console.error("Get all trainers error:", err);
     res.status(400).json({ error: err.message });
   }
 };
 
+// ✅ Get trainer by ID
 exports.getTrainerById = async (req, res) => {
   try {
     const trainer = await trainerService.getTrainerById(req.params.id);
-    
+
     // Add detailed availability and demo info
     const availability = await TrainerAvailability.findAll({
       where: { trainerId: req.params.id },
       order: [
-        [sequelize.literal("FIELD(dayOfWeek, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')")]
+        [
+          sequelize.literal(`
+            ARRAY_POSITION(
+              ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], "dayOfWeek"
+            )
+          `),
+          "ASC"
+        ]
       ]
     });
 
     const demoRequests = await DemoRequest.findAll({
       where: { assignedTrainerId: req.params.id },
       include: [
-        { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
-        { model: Course, attributes: ['id', 'title'] }
+        { model: User, as: "Student", attributes: ["id", "name", "email"] },
+        { model: Course, attributes: ["id", "title"] }
       ],
-      order: [['createdAt', 'DESC']]
+      order: [["createdAt", "DESC"]]
     });
 
     res.status(200).json({
@@ -72,11 +90,12 @@ exports.getTrainerById = async (req, res) => {
       message: "Trainer details fetched successfully"
     });
   } catch (err) {
-    console.error('Get trainer by ID error:', err);
+    console.error("Get trainer by ID error:", err);
     res.status(400).json({ error: err.message });
   }
 };
 
+// ✅ Create trainer
 exports.createTrainer = async (req, res) => {
   try {
     const trainer = await trainerService.createTrainer(req.body);
@@ -85,11 +104,12 @@ exports.createTrainer = async (req, res) => {
       message: "Trainer created successfully"
     });
   } catch (err) {
-    console.error('Create trainer error:', err);
+    console.error("Create trainer error:", err);
     res.status(400).json({ error: err.message });
   }
 };
 
+// ✅ Update trainer
 exports.updateTrainer = async (req, res) => {
   try {
     const trainer = await trainerService.updateTrainer(req.params.id, req.body);
@@ -98,24 +118,25 @@ exports.updateTrainer = async (req, res) => {
       message: "Trainer updated successfully"
     });
   } catch (err) {
-    console.error('Update trainer error:', err);
+    console.error("Update trainer error:", err);
     res.status(400).json({ error: err.message });
   }
 };
 
+// ✅ Delete trainer
 exports.deleteTrainer = async (req, res) => {
   try {
     // Check if trainer has any pending or approved demo requests
     const pendingDemos = await DemoRequest.count({
-      where: { 
+      where: {
         assignedTrainerId: req.params.id,
-        status: { [Op.in]: ['pending', 'approved'] }
+        status: { [Op.in]: ["pending", "approved"] }
       }
     });
 
     if (pendingDemos > 0) {
-      return res.status(400).json({ 
-        error: "Cannot delete trainer with pending or approved demo sessions" 
+      return res.status(400).json({
+        error: "Cannot delete trainer with pending or approved demo sessions"
       });
     }
 
@@ -125,25 +146,25 @@ exports.deleteTrainer = async (req, res) => {
     });
 
     await trainerService.deleteTrainer(req.params.id);
-    
-    res.status(200).json({ 
-      message: "Trainer and associated availability deleted successfully" 
+
+    res.status(200).json({
+      message: "Trainer and associated availability deleted successfully"
     });
   } catch (err) {
-    console.error('Delete trainer error:', err);
+    console.error("Delete trainer error:", err);
     res.status(400).json({ error: err.message });
   }
 };
 
-// Set trainer working hours/availability
+// ✅ Set trainer working hours/availability
 exports.setTrainerAvailability = async (req, res) => {
   try {
     const trainerId = req.params.id;
     const { availability } = req.body;
 
     if (!availability || !Array.isArray(availability)) {
-      return res.status(400).json({ 
-        error: "Availability array is required" 
+      return res.status(400).json({
+        error: "Availability array is required"
       });
     }
 
@@ -162,7 +183,7 @@ exports.setTrainerAvailability = async (req, res) => {
     });
 
     // Create new availability slots
-    const availabilityData = availability.map(slot => ({
+    const availabilityData = availability.map((slot) => ({
       trainerId,
       dayOfWeek: slot.dayOfWeek.toLowerCase(),
       startTime: slot.startTime,
@@ -171,16 +192,17 @@ exports.setTrainerAvailability = async (req, res) => {
       maxStudentsPerSlot: slot.maxStudentsPerSlot || 1
     }));
 
-    const createdAvailability = await TrainerAvailability.bulkCreate(availabilityData);
+    const createdAvailability = await TrainerAvailability.bulkCreate(
+      availabilityData
+    );
 
     res.status(201).json({
       trainerId,
       availability: createdAvailability,
       message: "Trainer availability set successfully"
     });
-
   } catch (error) {
-    console.error('Set trainer availability error:', error);
+    console.error("Set trainer availability error:", error);
     res.status(500).json({ error: error.message });
   }
 };
