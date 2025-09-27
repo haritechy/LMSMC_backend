@@ -19,7 +19,7 @@ exports.getAllTrainers = async (req, res) => {
             [
               sequelize.literal(`
                 ARRAY_POSITION(
-                  ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], "dayOfWeek"
+                  ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], "dayOfWeek"::text
                 )
               `),
               'ASC'
@@ -64,7 +64,7 @@ exports.getTrainerById = async (req, res) => {
         [
           sequelize.literal(`
             ARRAY_POSITION(
-              ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], "dayOfWeek"
+              ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], "dayOfWeek"::text
             )
           `),
           "ASC"

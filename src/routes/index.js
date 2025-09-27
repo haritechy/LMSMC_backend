@@ -9,6 +9,7 @@ const courseRoutes=require('./coursesRoutes');
 const enrollRoutes =require("./enrollmentRoutes");
 const  businessadminRoutes =require("./businessadminRoutes");
 const  demoRequstRoutes =require("./demoRequestRoutes");
+
 router.use("/", authRoutes);
 router.use("/courses", courseRoutes);
 router.use("/", trainerRoutes);

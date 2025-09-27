@@ -17,8 +17,11 @@ const TrainerAvailability = sequelize.define('TrainerAvailability', {
     },
   },
   dayOfWeek: {
-    type: DataTypes.ENUM(  'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'),
+    type: DataTypes.ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'),
     allowNull: false,
+    validate: {
+    isIn: [['monday','tuesday','wednesday','thursday','friday','saturday','sunday']]
+  }
   },
   startTime: {
     type: DataTypes.TIME,

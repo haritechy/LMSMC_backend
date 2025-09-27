@@ -1,34 +1,20 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
-const User = require("./userModel");
-
-const CoursePriceOption = require("./courseOptionModel");
-const Course = require("./course");
-
 
 const Enrollment = sequelize.define("Enrollment", {
   studentName: { type: DataTypes.STRING, allowNull: false },
   studentEmail: { type: DataTypes.STRING, allowNull: true },
 
-  studentid: {
+  studentId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-
-    references: {
-      model: 'Users',
-      key: 'id',
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-
+    allowNull: true,
     references: { model: "Users", key: "id" },
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
-
   },
 
-  courseId: {   // ✅ added missing column
+  courseId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: "Courses", key: "id" },
@@ -36,7 +22,13 @@ const Enrollment = sequelize.define("Enrollment", {
     onDelete: "CASCADE",
   },
 
-  selectedOptionId: { type: DataTypes.INTEGER, allowNull: true },
+  selectedOptionId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: "CoursePriceOptions", key: "id" },
+    onUpdate: "CASCADE",
+    onDelete: "SET NULL",
+  },
 
   amount: { type: DataTypes.FLOAT, allowNull: false },
   paymentMethod: { type: DataTypes.STRING, allowNull: false },
@@ -45,17 +37,11 @@ const Enrollment = sequelize.define("Enrollment", {
   razorpay_payment_id: { type: DataTypes.STRING },
 
   enrollmentDate: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-});
 
-// Associations
-Enrollment.belongsTo(CoursePriceOption, {
-  foreignKey: "selectedOptionId",
-  as: "selectedOption",
-});
-
-Enrollment.belongsTo(Course, {
-  foreignKey: "courseId",
-  as: "course",
+  courseStages: {
+    type: DataTypes.JSON,
+    defaultValue: [],
+  },
 });
 
 module.exports = Enrollment;

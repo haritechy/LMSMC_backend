@@ -9,12 +9,12 @@ const getAllStudentReports = async (req, res) => {
     const enrollments = await Enrollment.findAll({
       include: [
         { model: User, as: "student", attributes: ["id", "name", "email"] },
-        { model: Course, attributes: ["id", "title"] }
+        { model: Course, as: "course", attributes: ["id", "title"] }
       ],
       order: [["createdAt", "DESC"]],
     });
-    
     res.status(200).json(enrollments);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

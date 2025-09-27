@@ -1,6 +1,7 @@
 const sequelize = require("../config/db");
 const { DataTypes } = require("sequelize");
 const Role = require("./roleModel");
+const Enrollment = require("./enrollment");
 
 const User = sequelize.define("User", {
   name: DataTypes.STRING,
@@ -16,5 +17,6 @@ const User = sequelize.define("User", {
 });
 
 User.belongsTo(Role);
+User.hasMany(Enrollment, { foreignKey: "studentId", as: "enrollments" });
 
 module.exports = User;

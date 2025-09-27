@@ -57,26 +57,31 @@ exports.login = async (req, res) => {
 
 
 exports.register = async (req, res) => {
-  const { name, email, password,mobile, roleid } = req.body;
+  const { name, email, password, mobile, roleid } = req.body;
 
   try {
-    if(roleid!=1&&roleid !=2&&roleid !=3&&roleid !=4&&roleid !=5){
-        return res.status(400).json({message:"invalid role"});
+    const validRoles = [1, 2, 3, 4, 5];
+    if (!validRoles.includes(roleid)) {
+      return res.status(400).json({ message: "Invalid role" });
     }
+
     const roleRecord = await Role.findOne({ where: { id: roleid } });
     if (!roleRecord) {
       return res.status(400).json({ message: "Invalid role provided." });
     }
-    // 2. Check if email already exists
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use." });
-    }
+const existingUser = await User.findOne({ where: { email } });
+if (existingUser) {
+  return res.status(400).json({ message: "Email already in use." });
+}
 
-    // 3. Hash password
+// Check if mobile already exists
+const existingMobile = await User.findOne({ where: { mobile } });
+if (existingMobile) {
+  return res.status(400).json({ message: "Mobile number already in use." });
+}
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. Create user with RoleId
     const newUser = await User.create({
       name,
       email,
@@ -96,6 +101,13 @@ exports.register = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error(err);
+    if (err.name === 'SequelizeValidationError') {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: err.errors.map(e => e.message),
+      });
+    }
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
