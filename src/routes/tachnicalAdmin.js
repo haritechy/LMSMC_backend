@@ -22,7 +22,7 @@ const checkTechnicalAdmin = (req, res, next) => {
 };
 
 // Routes for technical admin course management
-router.post('/create', verifyToken, checkTechnicalAdmin, createCourse);
+router.post('/create', verifyToken, checkTechnicalAdmin, creaQQteCourse);
 router.get('/my-courses', verifyToken, checkTechnicalAdmin, getMyCourses);
 router.put('/update/:courseId', verifyToken, checkTechnicalAdmin, updateCourse);
 router.patch('/toggle-publish/:courseId', verifyToken, checkTechnicalAdmin, toggleCoursePublish);

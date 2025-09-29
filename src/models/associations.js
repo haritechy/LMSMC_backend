@@ -13,20 +13,24 @@ User.belongsTo(Role, { foreignKey: "RoleId" });
 Role.hasMany(User, { foreignKey: "RoleId" });
 
 // Course - Class
-Course.hasMany(Class, { foreignKey: "CourseId", onDelete: "CASCADE" });
-Class.belongsTo(Course, { foreignKey: "CourseId" });
+Course.hasMany(Class, { foreignKey: "CourseId", as: "classes", onDelete: "CASCADE" });
+Class.belongsTo(Course, { foreignKey: "CourseId", as: "course" });
 
 // Course - Enrollment
 Course.hasMany(Enrollment, { foreignKey: "courseId", as: "courseEnrollments", onDelete: "CASCADE" });
 Enrollment.belongsTo(Course, { foreignKey: "courseId", as: "course" });
 
 // Course - Trainer (User)
-Course.belongsTo(User, { as: "Trainer", foreignKey: "TrainerId" });
-User.hasMany(Course, { as: "Courses", foreignKey: "TrainerId" });
+Course.belongsTo(User, { as: "trainer", foreignKey: "TrainerId" });
+User.hasMany(Course, { as: "coursesAsTrainer", foreignKey: "TrainerId" }); // renamed alias
 
-// Enrollment - User (student)
+// Enrollment - Student (User)
 Enrollment.belongsTo(User, { as: "student", foreignKey: "studentId" });
-User.hasMany(Enrollment, { as: "studentEnrollments", foreignKey: "studentId" });
+User.hasMany(Enrollment, { as: "enrollmentsAsStudent", foreignKey: "studentId" }); // renamed alias
+
+// Enrollment - Trainer (User)
+Enrollment.belongsTo(User, { as: "trainer", foreignKey: "trainerId" });
+User.hasMany(Enrollment, { as: "enrollmentsAsTrainer", foreignKey: "trainerId" }); // renamed alias
 
 // Enrollment - CoursePriceOption
 Enrollment.belongsTo(CoursePriceOption, { as: "selectedOption", foreignKey: "selectedOptionId" });
